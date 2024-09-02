@@ -121,6 +121,11 @@ jobs:
           
           # Compress the directory using PowerShell
           Compress-Archive -Path $directoryToCompress -DestinationPath $zipFile
+
+          # Create the destination directory if it does not exist
+          if (-not (Test-Path -Path $destinationDirectory)) {
+              New-Item -Path $destinationDirectory -ItemType Directory
+          }
           
           # Optional: Move the zip file to a specific location for uploading
           Move-Item -Path $zipFile -Destination "$env:GITHUB_WORKSPACE\artifacts\$zipFile"
