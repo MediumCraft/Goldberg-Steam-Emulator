@@ -107,8 +107,33 @@ jobs:
       - name: "Upload target package"
         uses: actions/upload-artifact@v4
         with:
-          name: "emu-win-${{ matrix.prj }}-${{ matrix.cfg }}-${{ matrix.arch }}-${{ github.sha }}"
+          name: "emulator-windows-${{ matrix.prj }}-${{ matrix.cfg }}-${{ matrix.arch }}-${{ github.sha }}"
           path: "build/win"
           if-no-files-found: "error"
           compression-level: 9
           retention-days: 1
+
+      - name: Compress all files
+        run: |
+          # Define the directory to compress and the output zip file name
+          $directoryToCompress = "build/win"  # Replace with your directory
+          $zipFile = "emulator-windows-${{ matrix.prj }}-${{ matrix.cfg }}-${{ matrix.arch }}-${{ github.sha }}.zip"
+          
+          # Compress the directory using PowerShell
+          Compress-Archive -Path $directoryToCompress -DestinationPath $zipFile
+          
+          # Optional: Move the zip file to a specific location for uploading
+          Move-Item -Path $zipFile -Destination "$env:GITHUB_WORKSPACE\artifacts\$zipFile"
+
+      - name: Release Files
+        uses: softprops/action-gh-release@v2.0.8
+        with:
+          body: |
+            Developer Build of Goldberg Emulator
+            Windows
+          name: Goldberg Emulator for Windows
+          prerelease: true
+          files: |
+            artifacts/*.zip
+          generate_release_notes: true
+          
