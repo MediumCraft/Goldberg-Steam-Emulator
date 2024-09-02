@@ -116,8 +116,28 @@ jobs:
       - name: "Upload target package"
         uses: actions/upload-artifact@v4
         with:
-          name: "emu-linux-${{ matrix.prj }}-${{ matrix.cfg }}-${{ matrix.arch }}-${{ github.sha }}"
+          name: "emulator-linux-${{ matrix.prj }}-${{ matrix.cfg }}-${{ matrix.arch }}-${{ github.sha }}"
           path: "build/linux"
           if-no-files-found: "error"
           compression-level: 9
           retention-days: 1
+
+      - name: Compress directory
+        run: |
+          zip -r emulator-linux-${{ matrix.prj }}-${{ matrix.cfg }}-${{ matrix.arch }}-${{ github.sha }}.zip build/linux
+          # Alternatively, use tar
+          # tar -czvf compressed-directory.tar.gz your-directory
+
+      - name: Release Files
+        uses: softprops/action-gh-release@v2.0.8
+        with:
+          body: |
+            Developer Build of Goldberg Emulator
+            Linux
+          name: Goldberg Emulator for Linux
+          prerelease: true
+          files: |
+            emulator-linux-${{ matrix.prj }}-${{ matrix.cfg }}-${{ matrix.arch }}-${{ github.sha }}.zip
+          generate_release_notes: true
+
+      
