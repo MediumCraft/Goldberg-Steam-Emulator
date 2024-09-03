@@ -126,9 +126,7 @@ jobs:
           
           7z a -tzip "%zipFile%" "%directoryToCompress%\*"
   
-          if not exist "%GITHUB_WORKSPACE%\artifacts" (
-              mkdir "%GITHUB_WORKSPACE%\artifacts"
-          )
+          mkdir "%GITHUB_WORKSPACE%\artifacts"
   
           move "%zipFile%" "%GITHUB_WORKSPACE%\artifacts\%zipFile%"
 
