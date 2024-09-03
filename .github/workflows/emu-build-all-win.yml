@@ -107,8 +107,36 @@ jobs:
       - name: "Upload target package"
         uses: actions/upload-artifact@v4
         with:
-          name: "emu-win-${{ matrix.prj }}-${{ matrix.cfg }}-${{ matrix.arch }}-${{ github.sha }}"
+          name: "emulator-windows-${{ matrix.prj }}-${{ matrix.cfg }}-${{ matrix.arch }}-${{ github.sha }}"
           path: "build/win"
           if-no-files-found: "error"
           compression-level: 9
           retention-days: 1
+
+      - name: Archive Release
+        uses: thedoctor0/zip-release@0.7.5
+        with:
+          type: 'zip'
+          filename: 'emulator-windows-${{ matrix.prj }}-${{ matrix.cfg }}-${{ matrix.arch }}-${{ github.sha }}.zip'
+          path: "build/win"
+
+      - name: Set outputs
+        id: vars
+        #run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+        shell: bash
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Release Files
+        uses: softprops/action-gh-release@v2.0.8
+        with:
+          tag_name: commit-${{ steps.vars.outputs.sha_short }}
+          body: |
+            Developer Build of Goldberg Emulator
+            Windows
+          name: Goldberg Emulator for Windows
+          prerelease: true
+          files: |
+            emulator-windows-${{ matrix.prj }}-${{ matrix.cfg }}-${{ matrix.arch }}-${{ github.sha }}.zip
+          generate_release_notes: true
+          token: ${{ secrets.RELEASE_KEY }}
+          
