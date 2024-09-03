@@ -128,7 +128,7 @@ jobs:
       - name: Release Files
         uses: softprops/action-gh-release@v2.0.8
         with:
-          tag_name: ${{ steps.vars.outputs.sha_short }}
+          tag_name: commit-${{ steps.vars.outputs.sha_short }}
           body: |
             Developer Build of Goldberg Emulator
             Windows
