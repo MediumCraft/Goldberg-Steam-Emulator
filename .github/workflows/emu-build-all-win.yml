@@ -123,6 +123,7 @@ jobs:
       - name: Set outputs
         id: vars
         #run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+        shell: bash
         run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
       - name: Release Files
