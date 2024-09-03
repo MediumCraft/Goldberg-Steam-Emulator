@@ -1329,7 +1329,8 @@ void Steam_Overlay::render_main_window()
     std::string windowTitle{};
     // Note: don't translate this, project and author names are nouns, they must be kept intact for proper referral
     // think of it as translating "Protobuf - Google"
-    windowTitle.append("Ingame Overlay project - Nemirtingas (").append(tmp).append(")");
+    //windowTitle.append("Ingame Overlay project - Nemirtingas (").append(tmp).append(")");
+    windowTitle.append("Steam Overlay (").append(tmp).append(")");
 
     bool show = true;
 
