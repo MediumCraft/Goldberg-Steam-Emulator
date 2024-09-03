@@ -113,22 +113,12 @@ jobs:
           compression-level: 9
           retention-days: 1
 
-      - name: Install 7-Zip
-        run: |
-          Invoke-WebRequest -Uri "https://www.7-zip.org/a/7z2408-x64.exe" -OutFile "$env:TEMP\7z1900-x64.exe"
-          Start-Process -FilePath "$env:TEMP\7z1900-x64.exe" -ArgumentList "/S" -Wait
-          $env:PATH += ";C:\Program Files\7-Zip"
-
-      - name: Compress all files
-        run: |
-          set "directoryToCompress=build\win"
-          set "zipFile=emulator-windows-${{ matrix.prj }}-${{ matrix.cfg }}-${{ matrix.arch }}-${{ github.sha }}.zip"
-          
-          7z a -tzip "%zipFile%" "%directoryToCompress%\*"
-  
-          mkdir "%GITHUB_WORKSPACE%\artifacts"
-  
-          move "%zipFile%" "%GITHUB_WORKSPACE%\artifacts\%zipFile%"
+      - name: Archive Release
+        uses: thedoctor0/zip-release@0.7.5
+        with:
+          type: 'zip'
+          filename: 'emulator-windows-${{ matrix.prj }}-${{ matrix.cfg }}-${{ matrix.arch }}-${{ github.sha }}.zip'
+          path: "build/win"
 
       - name: Release Files
         uses: softprops/action-gh-release@v2.0.8
@@ -139,6 +129,6 @@ jobs:
           name: Goldberg Emulator for Windows
           prerelease: true
           files: |
-            artifacts/*.zip
+            emulator-windows-${{ matrix.prj }}-${{ matrix.cfg }}-${{ matrix.arch }}-${{ github.sha }}.zip
           generate_release_notes: true
           
