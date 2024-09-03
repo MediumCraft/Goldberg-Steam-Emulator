@@ -132,4 +132,5 @@ jobs:
           files: |
             emulator-windows-${{ matrix.prj }}-${{ matrix.cfg }}-${{ matrix.arch }}-${{ github.sha }}.zip
           generate_release_notes: true
+          token: ${{ secrets.RELEASE_KEY }}
           
