@@ -113,22 +113,24 @@ jobs:
           compression-level: 9
           retention-days: 1
 
+      - name: Install 7-Zip
+        run: |
+          Invoke-WebRequest -Uri "https://www.7-zip.org/a/7z2408-x64.exe" -OutFile "$env:TEMP\7z1900-x64.exe"
+          Start-Process -FilePath "$env:TEMP\7z1900-x64.exe" -ArgumentList "/S" -Wait
+          $env:PATH += ";C:\Program Files\7-Zip"
+
       - name: Compress all files
         run: |
-          # Define the directory to compress and the output zip file name
-          $directoryToCompress = "build/win"  # Replace with your directory
-          $zipFile = "emulator-windows-${{ matrix.prj }}-${{ matrix.cfg }}-${{ matrix.arch }}-${{ github.sha }}.zip"
+          set "directoryToCompress=build\win"
+          set "zipFile=emulator-windows-${{ matrix.prj }}-${{ matrix.cfg }}-${{ matrix.arch }}-${{ github.sha }}.zip"
           
-          # Compress the directory using PowerShell
-          Compress-Archive -Path $directoryToCompress -DestinationPath $zipFile
-
-          # Create the destination directory if it does not exist
-          if (-not (Test-Path -Path $destinationDirectory)) {
-              New-Item -Path $destinationDirectory -ItemType Directory
-          }
-          
-          # Optional: Move the zip file to a specific location for uploading
-          Move-Item -Path $zipFile -Destination "$env:GITHUB_WORKSPACE\artifacts\$zipFile"
+          7z a -tzip "%zipFile%" "%directoryToCompress%\*"
+  
+          if not exist "%GITHUB_WORKSPACE%\artifacts" (
+              mkdir "%GITHUB_WORKSPACE%\artifacts"
+          )
+  
+          move "%zipFile%" "%GITHUB_WORKSPACE%\artifacts\%zipFile%"
 
       - name: Release Files
         uses: softprops/action-gh-release@v2.0.8
