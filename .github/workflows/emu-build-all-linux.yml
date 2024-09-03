@@ -131,6 +131,7 @@ jobs:
       - name: Release Files
         uses: softprops/action-gh-release@v2.0.8
         with:
+          tag_name: ${{ github.sha }}
           body: |
             Developer Build of Goldberg Emulator
             Linux
